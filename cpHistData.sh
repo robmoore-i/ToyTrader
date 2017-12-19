@@ -1,16 +1,20 @@
 #!/bin/bash
 
-if [[ $# -lt 1 ]]
+if [[ $# -lt 2 ]]
 then
-  echo "Pass a currency pair"
+  echo "Usage: ./cpHistData currencyPair dirOfZips"
   exit 1
 fi
 
 currencyPair=$1
+downloadDir=$2
 
-cp ~/Downloads/* .
+for histdatazip in $(ls $downloadDir | grep $currencyPair)
+do
+  cp "$downloadDir/$histdatazip" .
+done
 
-for histdatazip in $(ls *.zip)
+for histdatazip in $(ls *.zip | grep $currencyPair)
 do
   unzip $histdatazip
 done
@@ -18,7 +22,7 @@ done
 rm *.txt
 rm *.zip
 
-for histdatacsv in $(ls *.csv)
+for histdatacsv in $(ls *.csv | grep $currencyPair)
 do
   mv $histdatacsv "${currencyPair}_${histdatacsv:20}"
 done
