@@ -7,3 +7,12 @@ parseDate:{"P"$("D"sv".:"sv'3 cut(0 4;4 2;6 2;9 2;11 2;13 2)sublist\:string x),"
 
 // Given a file handle for readCsv, converts it to an appropriate KDB table.
 l:{update timestamp:parseDate each timestamp from readCsv x}
+
+// Given a file handle for readCsv/l, parses the appropriate KDB table and
+// saves it to a splayed table ./CURRENCY_PAIR/YEAR/
+s:{
+  sx:string x;
+  currencyPair:hsym `$lower 1_7#sx;
+  yr:`$4#8_sx;
+  (` sv (currencyPair;yr;`)) set l x}
+
