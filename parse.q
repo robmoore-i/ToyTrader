@@ -16,3 +16,9 @@ s:{
   yr:`$4#8_sx;
   (` sv (currencyPair;yr;`)) set l x}
 
+// Given a currency pair X, returns a list of file handles corresponding to
+// .csv files in the current directory, containing quote data from that pair.
+k)csvs:{fs@&:{(x~6#y)&".csv"~-4#y}[.q.upper@$:x;]'$:'fs:!:`:.}
+
+
+
