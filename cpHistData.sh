@@ -27,4 +27,11 @@ do
   mv $histdatacsv "${currencyPair}_${histdatacsv:20}"
 done
 
+~/q/l64/q ingestHistData.q $currencyPair -s 4 -q
+
+for consumedcsv in $(ls *.csv | grep $currencyPair)
+do
+  rm $consumedcsv
+done
+
 exit 0
