@@ -26,3 +26,8 @@ plotCandlesticks:{[t;plotTitle]
 plotcpy:{[currencyPair;year]
   t:readcpy[currencyPair;year];
   plotCandlesticks[t;string[currencyPair],"-",string year];}
+
+// Plot a time range from some currency pair
+plotcpr:{[currencyPair;startTimestamp;endTimestamp]
+  t:readcpr[currencyPair;startTimestamp;endTimestamp];
+  plotCandlesticks[t;string[currencyPair],"-",string[startTimestamp],"-",string endTimestamp];}
