@@ -9,8 +9,11 @@ yearscp:{[currencyPair]key hsym`$string currencyPair}
 readcpr:{[currencyPair;startTimestamp;endTimestamp]
   startYear:`year$startTimestamp;
   endYear:`year$endTimestamp;
-  startYearsData:select from readcpy[currencyPair;startYear] where startTimestamp <= timestamp;
-  endYearsData:  select from readcpy[currencyPair;endYear]   where endTimestamp   > timestamp;
-  intermediateYears:1 + startYear + til endYear - 1 + startYear;
-  intermediateYearsData:raze readcpy[currencyPair;] each intermediateYears;
-  startYearsData,intermediateYearsData,endYearsData}
+  $[startYear=endYear;
+    select from readcpy[currencyPair;startYear] where timestamp within (startTimestamp;endTimestamp);
+    [
+      startYearsData:select from readcpy[currencyPair;startYear] where startTimestamp <= timestamp;
+      endYearsData:  select from readcpy[currencyPair;endYear]   where endTimestamp   > timestamp;
+      intermediateYears:1 + startYear + til endYear - 1 + startYear;
+      intermediateYearsData:raze readcpy[currencyPair;] each intermediateYears;
+      startYearsData,intermediateYearsData,endYearsData]]}

@@ -30,4 +30,6 @@ plotcpy:{[currencyPair;year]
 // Plot a time range from some currency pair
 plotcpr:{[currencyPair;startTimestamp;endTimestamp]
   t:readcpr[currencyPair;startTimestamp;endTimestamp];
-  plotCandlesticks[t;string[currencyPair],"-",string[startTimestamp],"-",string endTimestamp];}
+  title:string[currencyPair],"--between--",string[startTimestamp],"--and--",string endTimestamp;
+  title:ssr[ssr[title;":";"-"];".";"-"];
+  plotCandlesticks[t;title]}
