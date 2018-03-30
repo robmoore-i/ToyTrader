@@ -6,16 +6,18 @@ init:{[c]`cash`trades`holdings!(c;flip `side`timestamp`cpair`price`vol!()$\:"sjs
 
 // Trader buys an (a)sset at a given (t)ime, (p)rice and (v)olume.
 buy:{[trader;t;a;p;v]
-  trader[`trades],:(`buy;t;a;p;v);
-  $[a in key trader`holdings;
-    trader[`holdings;a]:trader[`holdings;a]+v;
-    trader[`holdings;a]:v];
-  trader[`cash]-:p*v;
+  if[trader[`cash]<p*v;v:floor trader[`cash]%p];
+  if[v>0;
+    trader[`trades],:(`buy;t;a;p;v);
+    $[a in key trader`holdings;
+      trader[`holdings;a]:trader[`holdings;a]+v;
+      trader[`holdings;a]:v];
+    trader[`cash]-:p*v;];
   trader}
 
 // Trader sells an (a)sset, at a specified (t)ime, (p)rice and (v)olume.
-// Assumed to have enough of the asset to make the trade.
 sell:{[trader;t;a;p;v]
+  if[trader[`holdings;a]<v;v:trader[`holdings;a]];
   trader[`trades],:(`sell;t;a;p;v);
   trader[`holdings;a]-:v;
   trader[`cash]+:p*v;
