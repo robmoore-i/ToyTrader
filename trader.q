@@ -36,6 +36,6 @@ randomTrades:{[n;a;d;mnv;mxv]
   ([]
     side:n?`buy`sell;
     timestamp:trades`timestamp;
-    cpair:n#a;price:
+    cpair:n#a;
     price:trades`open;
     vol:mnv+n?mxv-mnv)}
