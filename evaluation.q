@@ -1,3 +1,4 @@
+// Contains functions for evaluating a series of trades against historical data.
 \d .evl
 
 // Using an initial amount of (c)ash, execute all of the (t)rades and report
