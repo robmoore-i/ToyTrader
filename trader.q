@@ -2,7 +2,7 @@
 \d .trader
 
 // Initialises a trader with some (c)ash.
-init:{[c]`cash`trades`holdings!(c;flip `type`timestamp`cpair`price`vol!()$\:"sjsfp";flip `cpair`vol!()$\:"sj")}
+init:{[c]`cash`trades`holdings!(c;flip `side`timestamp`cpair`price`vol!()$\:"sjsfp";flip `cpair`vol!()$\:"sj")}
 
 // Trader buys an (a)sset, at a specified (t)ime, (p)rice and (v)olume.
 buy:{[trader;a;t;p;v]
@@ -20,3 +20,14 @@ sell:{[trader;a;t;p;v]
   trader[`holdings]:update vol:vol-v from trader[`holdings] where cpair=a;
   trader[`cash]+:p*v;
   trader}
+
+// Generates (n) random trades from the (d)ata given on an (a)sset, with a
+// specified min volume(mnv) and max volume(mxv).
+randomTrades:{[n;a;d;mnv;mxv]
+  trades:d@n?count d;
+  ([]
+    side:n?`buy`sell;
+    timestamp:trades`timestamp;
+    cpair:n#a;price:
+    trades`open;
+    vol:mnv+n?mxv-mnv)}
