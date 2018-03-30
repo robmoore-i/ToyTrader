@@ -17,10 +17,12 @@ buy:{[trader;t;a;p;v]
 
 // Trader sells an (a)sset, at a specified (t)ime, (p)rice and (v)olume.
 sell:{[trader;t;a;p;v]
+  if[not a in key trader[`holdings];trader[`holdings;a]:0];
   if[trader[`holdings;a]<v;v:trader[`holdings;a]];
-  trader[`trades],:(`sell;t;a;p;v);
-  trader[`holdings;a]-:v;
-  trader[`cash]+:p*v;
+  if[v>0;
+    trader[`trades],:(`sell;t;a;p;v);
+    trader[`holdings;a]-:v;
+    trader[`cash]+:p*v;];
   trader}
 
 // Trader executes a trade.
