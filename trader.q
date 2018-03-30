@@ -8,7 +8,7 @@ init:{[c]`cash`trades`holdings!(c;flip `type`timestamp`cpair`price`vol!()$\:"sjs
 buy:{[trader;a;t;p;v]
   trader[`trades],:(`buy;t;a;p;v);
   $[a in trader[`holdings;`cpair];
-    trader[`holdings]:update vol:vol+v from trader.holdings where cpair=a;
+    trader[`holdings]:update vol:vol+v from trader[`holdings] where cpair=a;
     trader[`holdings],:(a;v)];
   trader[`cash]-:p*v;
   trader}
