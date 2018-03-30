@@ -6,4 +6,4 @@
 finalProfit:{[c;t;p]
   trader:.trader.excList[.trader.init c;t];
   liquidated:sum p*k!0^trader[`holdings]@k:key p;
-  liquidated+trader`cash}
+  (liquidated+trader`cash)-c}
