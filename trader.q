@@ -2,14 +2,14 @@
 \d .trader
 
 // Initialises a trader with some (c)ash.
-init:{[c]`cash`trades`holdings!(c;flip `side`timestamp`cpair`price`vol!()$\:"sjsfp";flip `cpair`vol!()$\:"sj")}
+init:{[c]`cash`trades`holdings!(c;flip `side`timestamp`cpair`price`vol!()$\:"sjsfp";()!())}
 
 // Trader buys an (a)sset at a given (t)ime, (p)rice and (v)olume.
 buy:{[trader;t;a;p;v]
   trader[`trades],:(`buy;t;a;p;v);
-  $[a in trader[`holdings;`cpair];
-    trader[`holdings]:update vol:vol+v from trader[`holdings] where cpair=a;
-    trader[`holdings],:(a;v)];
+  $[a in key trader`holdings;
+    trader[`holdings;a]:trader[`holdings;a]+v;
+    trader[`holdings;a]:v];
   trader[`cash]-:p*v;
   trader}
 
@@ -17,7 +17,7 @@ buy:{[trader;t;a;p;v]
 // Assumed to have enough of the asset to make the trade.
 sell:{[trader;t;a;p;v]
   trader[`trades],:(`sell;t;a;p;v);
-  trader[`holdings]:update vol:vol-v from trader[`holdings] where cpair=a;
+  trader[`holdings;a]-:v;
   trader[`cash]+:p*v;
   trader}
 
