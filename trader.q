@@ -4,8 +4,8 @@
 // Initialises a trader with some (c)ash.
 init:{[c]`cash`trades`holdings!(c;flip `side`timestamp`cpair`price`vol!()$\:"sjsfp";flip `cpair`vol!()$\:"sj")}
 
-// Trader buys an (a)sset, at a specified (t)ime, (p)rice and (v)olume.
-buy:{[trader;a;t;p;v]
+// Trader buys an (a)sset at a given (t)ime, (p)rice and (v)olume.
+buy:{[trader;t;a;p;v]
   trader[`trades],:(`buy;t;a;p;v);
   $[a in trader[`holdings;`cpair];
     trader[`holdings]:update vol:vol+v from trader[`holdings] where cpair=a;
@@ -15,7 +15,7 @@ buy:{[trader;a;t;p;v]
 
 // Trader sells an (a)sset, at a specified (t)ime, (p)rice and (v)olume.
 // Assumed to have enough of the asset to make the trade.
-sell:{[trader;a;t;p;v]
+sell:{[trader;t;a;p;v]
   trader[`trades],:(`sell;t;a;p;v);
   trader[`holdings]:update vol:vol-v from trader[`holdings] where cpair=a;
   trader[`cash]+:p*v;
@@ -29,5 +29,5 @@ randomTrades:{[n;a;d;mnv;mxv]
     side:n?`buy`sell;
     timestamp:trades`timestamp;
     cpair:n#a;price:
-    trades`open;
+    price:trades`open;
     vol:mnv+n?mxv-mnv)}
