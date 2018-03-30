@@ -1,8 +1,8 @@
 // Remove silly data points and fix up the timestamp column.
 makePlottable:{[t]
-  t:delete from t where open < 0;
-  t:delete from t where open > avg[open]+10*sdev open;
-  t:delete from t where open < avg[open]-10*sdev open;
+  mean:avg t`open;
+  err:10*sdev t`open;
+  t:select from t where and[open within (mean-err;mean+err);open>0];
   update timestamp:{{(10#x),"-",11 8 sublist x} string x} each timestamp from t}
 
 saveGnuplotCandlesticksScript:{[plotTitle]
