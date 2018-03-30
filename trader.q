@@ -21,6 +21,14 @@ sell:{[trader;t;a;p;v]
   trader[`cash]+:p*v;
   trader}
 
+// Trader executes a trade.
+exc:{[trader;trade]
+  $[`buy=trade`side;
+    buy[trader;]  . 1_value trade;
+    sell[trader;] . 1_value trade]}
+// Fold trade execution over a list of trades.
+excList:{[tr;ts].trader.exc/[tr;ts]}
+
 // Generates (n) random trades from the (d)ata given on an (a)sset, with a
 // specified min volume(mnv) and max volume(mxv).
 randomTrades:{[n;a;d;mnv;mxv]
