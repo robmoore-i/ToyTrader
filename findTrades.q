@@ -1,7 +1,5 @@
 \l ga.q
-\l query.q
 \l trader.q
-t:readcpy[`eurgbp;2011]
 
 // ========================================================================================
 // PROBLEM: Find 10 trades for a table of quotes, t, which yield a €500 profit using €10230
@@ -23,67 +21,57 @@ t:readcpy[`eurgbp;2011]
 // vol      | 554
 // q)
 
-// Dependent on the declaration of variable t at this point.
-if[not `t in key value `.;'t]
-if[98h<>type t;'ttype]
+randomChromosome:{[nQuotes;qgl;vgl;nTrades;x]
+  randomTradeGene:{[nQuotes;qgl;vgl;x]
+    randomSideGene:{rand 2};
+    randomQuoteGene:{[qgl;nQuotes;x]{((x-count y)#0),y}[qgl;] 2 vs rand nQuotes}[qgl;nQuotes;];
+    randomVolGene:{[x;y]x?2}[vgl;];
+    raze (randomSideGene;randomQuoteGene;randomVolGene)@\:`}[nQuotes;qgl;vgl;];
+  raze randomTradeGene each nTrades#0}
 
-// €500 profit, 10 trades, 10 buys.
-goal:(500;10;10)
-
-// Base config
-soughtNumberOfTrades:10
-minVol:512
-maxVol:1023
-startingCash:soughtNumberOfTrades*maxVol
-volGeneLength:ceiling 2 xlog minVol
-
-// Config based on quotes (t)able
-nQuotes:count t
-quoteGeneLength:ceiling 2 xlog nQuotes
-chromosomeSize:1+quoteGeneLength+volGeneLength
-finalPrices:(enlist`eurgbp)!enlist(last t)`close
-
-// Using the quotes (t)able, converts a 29-bit (g)ene into a dictionary trade
-expressTradeGene:{[t;g]
-  quote:t@2 sv (1;quoteGeneLength) sublist g;
-  `side`timestamp`cpair`price`vol!($[first g;`buy;`sell];quote`timestamp;`eurgbp;quote`open;2 sv 1,neg[volGeneLength]#g)}
-
-randomQuoteGene:{{((quoteGeneLength-count x)#0),x} 2 vs rand nQuotes}
-randomVolGene:{volGeneLength?2}
-randomSideGene:{rand 2}
-
-randomTradeGene:{raze (randomSideGene;randomQuoteGene;randomVolGene)@\:`}
-randomChromosome:{raze randomTradeGene each soughtNumberOfTrades#0}
-
-// Using an initial amount of (c)ash, execute all of the (t)rades and report
-// the final value of assets and number of executed trades, using the given
-// final (p)rices dictionary to assess the cash acquired through liquidation
-// at the end of the period.
-executeTrades:{[c;t;p]
-  trader:.trader.excList[.trader.init c;t];
-  liquidated:sum p*k!0^trader[`holdings]@k:key p;
-  ((liquidated+trader`cash)-c;count trader[`trades])}
-
-// Using the quotes (t)able, find profit for a 290-bit (c)hromosome, the number of trades made and the number of buys.
-executeChromosome:{[t;c]
-  trades:`timestamp xasc expressTradeGene[t;] each chromosomeSize cut c;
+// Chop the given 290-bit (c)hromosome into it's consituent trades of given (s)ize.
+// Given the intended lengths of the quote and vol genes (qgl, vgl), as well as the quotes (t)able,
+//   execute the trades on a trader with some initial (r)eserve of cash, where the final (p)rices are given.
+// Return a 3-list of (final-profit;num-trades-execute;num-buys-executed).
+executeChromosome:{[t;qgl;vgl;cSize;cash;lastPx;c]
+  expressTradeGene:{[qgl;vgl;t;g]
+    quote:t@2 sv (1;qgl) sublist g;
+    `side`timestamp`cpair`price`vol!($[first g;`buy;`sell];quote`timestamp;`eurgbp;quote`open;2 sv 1,neg[vgl]#g)}[qgl;vgl;t;];
+  trades:`timestamp xasc expressTradeGene each cSize cut c;
   buys:count where trades[`side]=`buy;
-  executeTrades[startingCash;trades;finalPrices],buys}
+  trader:.trader.excList[.trader.init cash;trades];
+  liquidated:sum lastPx*k!0^trader[`holdings]@k:key lastPx;
+  (liquidated+trader[`cash]-cash;count trader[`trades];buys)}
 
-// Given a 3-list of (profit;trades-executed;buys-executed), score the result.
+// Given two 3-lists of (profit;trades-executed;buys-executed), produce a float valued fitness score.
 // Reciprocal of quadratic cost, weighted 5* on profit.
 scoreFitness:{[goal;attempt]"f"$reciprocal sum 5 1 1*'{d*d:x-y}'[goal;attempt]}
 
-// Given a quotes (t)able and a (g)oal for a (p)opulation, give a table with rows of executed value and fitness.
-showPopulationPerformance:{[t;g;p]
-  ex:executeChromosome[t;] each p;
-  ([]
-    evaluation:ex;
-    fitness:scoreFitness[g;] each ex)}
+// Given a (g)oal for a (p)opulation and a way of (exc)uting chromosomes,
+// Return a table with rows of executed value and corresponding fitness.
+showPopulationPerformance:{[exc;g;p]
+  ex:exc each p;
+  ([]evaluation:ex;fitness:scoreFitness[g;] each ex)}
 
 // For a quotes (t)able, (g)oal, initial population (s)ize, a crsRate, mutRate and the maximum number of generations
 // to search for, iMax, produces a table of chromosomes with the best performance.
-findTrades:{[t;crsRate;mutRate;iMax;s;g]
-  p:randomChromosome each s#0;
-  chromosomes:evolve[crsRate;mutRate;executeChromosome[t;];scoreFitness;g;iMax;p];
-  (showPopulationPerformance[t;g;chromosomes];chromosomes)}
+// Find (n) trades with a given max volume (vMax), with profit closest to the (targetProfit), favouring more trades
+// and more buys, using a genetic algorithm from an initial (s)et of chromosomes with given cross-rate (crsRate),
+// mutation-rate (mutRate) and a defined number of (i)terations.
+findTrades:{[t;n;vMax;targetProfit;s;crsRate;mutRate;i]
+  // Set up the many variables
+  goal:(targetProfit;n;n);
+  vMin:"j"$2 xexp -1+ceiling 2 xlog vMax;
+  cash:n*vMax;
+  vgl:ceiling 2 xlog vMin;
+  nQuotes:count t;
+  qgl:ceiling 2 xlog nQuotes;
+  cSize:1+qgl+vgl;
+  lastPx:(enlist`eurgbp)!enlist(last t)`close;
+  // Create the required projections
+  rch:randomChromosome[nQuotes;qgl;vgl;n;];
+  exc:executeChromosome[t;qgl;vgl;cSize;cash;lastPx;];
+  // Run the genetic algorithm
+  chromosomes:evolve[crsRate;mutRate;exc;scoreFitness;goal;i;rch each s#0];
+  // Produce the results
+  (showPopulationPerformance[exc;goal;chromosomes];chromosomes)}
