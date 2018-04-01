@@ -2,7 +2,7 @@
 \l trader.q
 
 // ========================================================================================
-// PROBLEM: Find 10 trades for a table of quotes, t, which yield a €500 profit using €10230
+// PROBLEM: Find n trades for a table of quotes, t, which yield a €500 profit using €10230
 // ========================================================================================
 
 // A trade contains a:
