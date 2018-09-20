@@ -1,0 +1,219 @@
+# Treat punctuation as part of the word
+# set wordbounds
+
+# Show cursor position in status bar at all times
+set constantshow
+
+# Use auto-indentation
+set autoindent
+
+# Use cut to end of line with ^K by default
+set cut
+
+# Use smooth scrolling as the default
+set smooth
+
+# Use this spelling checker instead of the internal one. This option
+# does not properly have a default value.
+set speller "aspell -c"
+
+# Use this tab size instead of the default; it must be greater than 0
+set tabsize 2
+
+# Set tabs to be spaces
+set tabstospaces
+
+#Color Syntax Highlighting
+
+syntax "C files" "\.(c|h)$"
+color red "\<[A-Z_]{2,}\>"
+color green "\<(float|char|int|void|static|const|struct)\>"
+color brightyellow "\<(if|while|do|else|case|switch)\>"
+color brightcyan "^#(  )*(define|include|ifn?def|endif|elif|else|if)"
+color brightyellow "<[^=       ]*>" ""(.|[^"])*""
+color brightyellow start=""(\\.|[^\"])*\\( |   )*$" end="^(\\.|[^\"])*""
+color brightblue "//.*"
+color brightblue start="/\*" end="\*/"
+
+syntax "TeX files" "\.tex$"
+color green "\\.|\\[A-Za-z]*"
+color magenta "[{}]"
+color blue "%.*"
+
+syntax "The .nanorc" "[\.]*nanorc$"
+color white "^ *(set|unset).*$"
+color cyan "^ *(set|unset) (autoindent|backup|constantshow|cut|fill|keypad|multibuffer|noconvert|nofollow|nohelp|nowrap|operatingdir|preserve|quotestr|regexp|smooth|speller|suspend|tabsize|tempfile|historylog|view|wordbounds)"
+color brightwhite "^ *syntax [^ ]*"
+color brightblue "^ *set\>" "^ *unset\>" "^ *syntax\>"
+color white "^ *color\>.*"
+color yellow "^ *color (bright)?(white|black|red|blue|green|yellow|magenta|cyan)\>"
+color magenta "^ *color\>"
+color green "^#.*$"
+color white "^ *(bind|unbind)\>.*"
+color cyan "^ *(bind|unbind) ((M-[A-Z0-9])|(\^[A-Z0-9]))\>"
+color red "^ *(bind|unbind)\>"
+
+syntax "Haskell files" "\.hs$"
+# module declaration
+color white "^ *module\>.*"
+color cyan "^ *module .*\>"
+color red "^ *module\>"
+# import statements
+color white "^ *import\>.*"
+color yellow "^ *import .*\>"
+color magenta "^ *import\>"
+# function declarations
+color blue "^ *[a-z][a-zA-Z0-9]* ::.*\>"
+# True and False
+color brightblue "\b(True|False)\b"
+# comments
+color cyan "--.*"
+# keywords
+color red "\b(let|in|do|if|then|else|case|of|data|type|instance|where|deriving)\b"
+# built in types and classes
+color green "\b(Int|String|Char|Bool|Integral|Real|Fractional|Floating|RealFrac|Num|Monad|Functor|Applicative|Maybe|IO|Either|Eq|Show|Enum|Double|Bounded|Ord|Response|ByteString)\b"
+# built in functions
+color magenta "\b(ord|chr|map|reverse|get|put|return|mapM_?|pure|zip|zipWith|concatMap|(fold(l|r)1?)|length|show|sin|cos|tan|null|fst|snd|nub|union|intercalate)\b"
+# lists
+color brightblue "\[|\]"
+# parentheses"
+color brightcyan "\(|\)"
+# Errors
+color brightred "\b(undefined|error)\b"
+
+syntax "Q files" "\.q$"
+# numbers
+color brightmagenta "[0-9]*"
+# query words
+color red "\b(aj|aj0|asof|by|cols|delete|ej|exec|fkeys|fby|from|ij|insert|key|keys|lj|ljf|meta|pj|select|uj|update|upsert|where|wj|wj1|ww|xcol|xcols|xgroup|xkey)\b"
+# keywords
+color yellow "\b(and|asc|attr|bin|binr|desc|do|dsave|enlist|eval|exit|first|flip|get|getenv|gtime|hclose|hcount|hdel|hopen|hsym|iasc|idesc|if|in|last|load|ltime|not|null|or|parse|plist|rand|read0|read1|reval|rload|rsave|save|set|setenv|system|tables|til|txf|type|value|view|views|while|within|xasc|xdesc)\b"
+# number keywords
+color magenta "\b(abs|acos|asin|atan|avg|avgs|ceiling|cor|cos|cov|dev|div|ema|exp|floor|inv|log|lsq|mavg|max|maxs|mdev|med|min|mins|mmax|mmin|mmu|mod|msum|neg|prd|prds|reciprocal|scov|sdev|signum|sin|sqrt|sum|svar|tan|var|wavg|wsum|xbar|xexp|xlog)\b"
+# string keywords
+color blue "\b(csv|like|lower|ltrim|md5|rtrim|show|ss|ssr|string|sv|trim|upper)\b"
+# vector keywords
+color green "\b(all|any|count|cross|cut|deltas|differ|distinct|except|fills|group|inter|mcount|next|prev|rank|ratios|raze|reverse|rotate|sublist|ungroup|union|vs|xprev|xrank)\b"
+# function keywords
+color brightwhite "\b(each|over|peach|prior|scan)\b"
+# symbols
+color brightgreen "[`][a-zA-Z_][a-zA-Z0-9_]*"
+# brackets
+color brightcyan "[[]|[]]|[(]|[)]|[{]|[}]"
+# comments
+color brightwhite "[/][/].*"
+
+syntax "K files" "\.k$"
+# keywords
+color blue "\b(abs|sin|cos|asin|acos|tan|atan|log|in|within|ss|like|cov|var|dev|avg|cor|div|exit|bin|binr|getenv|setenv|wavg|wsum|max|min|prd|sqrt)\b"
+# numbers
+color brightmagenta "[0-9]*"
+# brackets
+color brightcyan "[[]|[]]|[(]|[)]|[{]|[}]"
+# verbs
+color red "[@]|[!]|[<]|[>]|[#]|[&]|[*]|[$]|[,]|[+]|[-]|[=]|[~]"
+# adverbs
+color green "([/][:])|([\][:])|[']|(['][:])|[/]|[\]|[:]"
+# comments
+color brightwhite "[/][/].*"
+
+syntax "J files" "\.ijs$"
+# assignment
+color brightblue "[=][.:]"
+# maths
+color yellow "([+][.:]?)|([*][.:]?)|([-][.:]?)|([%][.:]?)|([\^][.]?)|([?][.]?)|(q[:])|(r[.])|(o[.])|(j[.])|([!])"
+# bools
+color blue "([<][.:]?)|([>][.:]?)|[=]"
+# constants
+color cyan "([_][.:]?)|([[][:]?)|[]]|([$][:])"
+# array
+color green "([$][.]?)|([~][.:])|([|][.:]?)|([,][.:]?)|([;][:]?)|([#][.:]?)|([{][.:]?:?)|([}][.:])|([i][.:])|([I][.])|(e[.])|(E[.])"
+# function
+color red "[~]|([\^][:])|([.][.:]?)|([:][.:]?)|([!][.:])|([/][.]?)|([\][.]?)|([}])|([;][.])|(["])|([`][:]?)|([@][.:]?)|([&][.]?[:]?)|(L[:])"
+# strings
+color magenta "(["][.:])|(a[.])|(A[.])"
+# comments
+color brightcyan "NB[.].*"
+
+syntax "Rust files" "\.rs$"
+# Function definitions
+color magenta "fn [a-z_0-9]+"
+# Reserved words
+color yellow "\<(abstract|alignof|as|become|box|break|const|continue|crate|do|else|enum|extern|false|final|fn|for|if|impl|in|let|loop|macro|match|mod|move|mut|offsetof|override|priv|pub|pure|ref|return|sizeof|static|self|struct|super|true|trait|type|typeof|unsafe|unsized|use|virtual|where|while|yield)\>"
+# Macros
+color red "[a-z_]+!"
+# Constants
+color magenta "[A-Z][A-Z_0-9]+"
+# Traits/Enums/Structs/Types/...
+color magenta "[A-Z][A-Za-z0-9]+"
+# Strings
+color green "\".*\""
+color green start="\".*\\$" end=".*\""
+## NOTE: This isn't accurate, but matching "#{0,} for the end of the string is too liberal.
+color green start="r#+\"" end="\"#+"
+# Comments
+color blue "//.*"
+color blue start="/\*" end="\*/"
+# Attributes
+color magenta start="#!\[" end="\]"
+# Some common markers
+color brightcyan "(XXX|TODO|FIXME|\?\?\?)"
+
+syntax "Elixir files" "\.ex(s?)$"
+# Capitoes
+color cyan "\b[A-Z]+[A-Za-z0-9_]*\b"
+# Lowinhos
+color yellow "\b[a-z]+[A-Za-z0-9_]*\b"
+# Scoping
+color blue "\b(use)\b"
+# DefX
+color red "\b(defmodule|def)\b"
+# Keywords
+color magenta "\b(fn|test|do|end)\b"
+# Ignored
+color brightwhite "\b[_]([a-z][A-Za-z0-9_]*)?\b"
+# Brackets
+color brightcyan "[[]|[]]|[(]|[)]|[{]|[}]"
+# Strings
+color green "\".*\""
+color green start="\".*\\$" end=".*\""
+## NOTE: This isn't accurate, but matching "#{0,} for the end of the string is too liberal.
+color green start="r#+\"" end="\"#+"
+
+# word cutting
+bind ^H cutwordleft main
+bind ^J cutwordright main
+
+# undo & redo
+unbind ^Z main
+unbind M-U main
+unbind ^Y main
+bind ^Z undo main
+bind ^Y redo main
+
+# copy marked text
+unbind M-6 main
+unbind ^C all
+bind M-6 cancel all
+bind ^C copytext main
+
+# cut and paste
+unbind ^U main
+bind ^V uncut main
+unbind ^X main
+unbind ^K main
+bind ^X cut main
+bind ^Q exit main
+
+# pageup and pagedown
+bind ^U  prevpage main
+bind ^D nextpage main
+
+# mark text
+unbind ^^ main
+unbind M-M main
+bind M-M mark main
+
+# save
+unbind ^O main
+bind ^S writeout main
